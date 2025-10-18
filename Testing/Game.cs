@@ -1,6 +1,11 @@
 ﻿// Include the namespaces (code libraries) you need below.
+using Raylib_cs;
 using System;
+using System.Drawing;
 using System.Numerics;
+using System.Security.AccessControl;
+using System.Xml.Serialization;
+using System.Collections.Generic; // added for List<Vector2>
 
 // The namespace your code is in.
 namespace MohawkGame2D
@@ -11,23 +16,28 @@ namespace MohawkGame2D
     public class Game
     {
         // Place your variables here:
-        Color black         = new Color("#212123");
-        Color white         = new Color("#f2f0e5");
-        Color brown         = new Color("#80493a");
-        Color orange        = new Color("#d3a068");
-        Color darkOrange    = new Color("#a77b5b");
-        Color yellow        = new Color("#e5ceb4");
-        Color darkGreen     = new Color("#4e584a");
-        Color blue          = new Color("#4b80ca");
-        Color darkBlue      = new Color("#43436a");
-        Color lightPink     = new Color("#edc8c4");
-        Color pink          = new Color("#cf8acb");
+        Color black = new Color("#212123");
+        Color white = new Color("#f2f0e5");
+        Color brown = new Color("#80493a");
+        Color orange = new Color("#d3a068");
+        Color darkOrange = new Color("#a77b5b");
+        Color yellow = new Color("#e5ceb4");
+        Color darkGreen = new Color("#4e584a");
+        Color blue = new Color("#4b80ca");
+        Color darkBlue = new Color("#43436a");
+        Color lightPink = new Color("#edc8c4");
+        Color pink = new Color("#cf8acb");
 
         Color catColor = Color.LightGray;
 
-        //Declare an array for how many small stars are generated
-        private Vector2[] smallStarPositions = new Vector2[8];
-        
+        // Persisted small star positions
+        private List<Vector2> smallStarPositions = new();
+        private int amountOfSmallStars = 8;
+        private int starXMin = 10;
+        private int starXMax = 390;
+        private int starYMin = 10;
+        private int starYMax = 310;
+
         /// <summary>
         ///     Setup runs once before the game loop begins.
         /// </summary>
@@ -36,9 +46,10 @@ namespace MohawkGame2D
             Window.SetTitle("2D Interactive Drawing");
             Window.SetSize(400, 400);
 
-            //Generate small stars once at startup
-            GenerateSmallStarPositions();
+            // generate stars once at startup
+            GenerateSmallStars();
         }
+
         /// <summary>
         ///     Update runs every frame.
         /// </summary>
@@ -66,7 +77,7 @@ namespace MohawkGame2D
             Draw.Rectangle(x, y, w, h);
         }
 
-            void DrawPumpkin()
+        void DrawPumpkin()
         {
             //Color Fill Pumpkin  
             Draw.LineSize = 1;
@@ -92,20 +103,20 @@ namespace MohawkGame2D
             DrawOutlineRectangle(125, 335, 10, 5);
             //right outline ascending vertical
             DrawOutlineRectangle(135, 305, 5, 30);
-                DrawOutlineRectangle(130, 295, 5, 10);
+            DrawOutlineRectangle(130, 295, 5, 10);
             //left outline ascending vertical
             DrawOutlineRectangle(50, 305, 5, 30);
-                DrawOutlineRectangle(55, 295, 5, 10);
+            DrawOutlineRectangle(55, 295, 5, 10);
             //left outline ascending horizontal (top line)
             DrawOutlineRectangle(60, 290, 10, 5);
-                DrawOutlineRectangle(70, 285, 15, 5);
+            DrawOutlineRectangle(70, 285, 15, 5);
             //right outline ascending horizontal (top line)
             DrawOutlineRectangle(120, 290, 10, 5);
-                DrawOutlineRectangle(105, 285, 15, 5);
+            DrawOutlineRectangle(105, 285, 15, 5);
             //top outline
             DrawOutlineRectangle(90, 285, 10, 5);
 
-            //stem outline
+            //stem
             DrawOutlinePixel(85, 280, 5);
             DrawOutlinePixel(100, 280, 5);
             DrawOutlinePixel(90, 275, 5);
@@ -136,32 +147,32 @@ namespace MohawkGame2D
             Draw.Square(90, 290, 5);
         }
 
-            void DrawCat()
+        void DrawCat()
         {
             if (Input.IsMouseButtonPressed(MouseInput.Left))
             {
-                //Assign Random Color when user presses [LEFTMOUSE]
+                //Assign Random Color
                 catColor = Random.Color();
             }
-                //Fill Cat Color
-                Draw.LineSize = 1;
-                    Draw.LineColor = catColor;
-                    Draw.FillColor = catColor;
-                Draw.Rectangle(195, 265, 45, 80);
-                Draw.Rectangle(190, 315, 5, 20);
-                Draw.Rectangle(240, 315, 5, 20);
-                Draw.Square(195, 260, 5);
-                Draw.Square(235, 260, 5);
-                //Fill Tail Color
-                Draw.Rectangle(245, 335, 15, 5);
-                Draw.Rectangle(250, 330, 15, 5);
-                Draw.Rectangle(255, 325, 15, 5);
-                Draw.Rectangle(260, 310, 15, 15);
+            //Fill Cat Color
+            Draw.LineSize = 1;
+            Draw.LineColor = catColor; // MAKE CHANGEABLE
+            Draw.FillColor = catColor; //
+            Draw.Rectangle(195, 265, 45, 80);
+            Draw.Rectangle(190, 315, 5, 20);
+            Draw.Rectangle(240, 315, 5, 20);
+            Draw.Square(195, 260, 5);
+            Draw.Square(235, 260, 5);
+            //Fill Tail Color
+            Draw.Rectangle(245, 335, 15, 5);
+            Draw.Rectangle(250, 330, 15, 5);
+            Draw.Rectangle(255, 325, 15, 5);
+            Draw.Rectangle(260, 310, 15, 15);
 
             //Eye Color
             Draw.LineSize = 1;
-                Draw.LineColor = darkBlue;
-                Draw.FillColor = darkBlue;
+            Draw.LineColor = darkBlue; // MAKE CHANGEABLE
+            Draw.FillColor = darkBlue; //
             Draw.Square(205, 285, 5);
             Draw.Square(225, 285, 5);
             //Nose
@@ -216,28 +227,29 @@ namespace MohawkGame2D
             DrawOutlinePixel(230, 260, 5);
         }
 
-            void DrawBackground()
+        void DrawBackground()
         {
             void DrawSmallStars()
             {
-                //Makes it so if user presses [SPACEBAR] the star positions re-generate
+                // regenerate on space press
                 if (Input.IsKeyboardKeyPressed(KeyboardInput.Space))
                 {
-                    GenerateSmallStarPositions();
+                    GenerateSmallStars();
                 }
 
                 Draw.LineSize = 1;
                 Draw.LineColor = white;
                 Draw.FillColor = white;
-                //Draw stars using coordinates from array
-                for (int i = 0; i < smallStarPositions.Length; i++)
+
+                // draw from persisted positions so stars remain steady
+                foreach (var pos in smallStarPositions)
                 {
-                    var position = smallStarPositions[i];
-                    Draw.Square((int)position.X, (int)position.Y, 5);
+                    Draw.Square((int)pos.X, (int)pos.Y, 5);
                 }
             }
+
             //Draw Smaller Stars
-                DrawSmallStars();
+            DrawSmallStars();
             //Draw Moon
             {
                 //Color Fill Moon
@@ -304,21 +316,18 @@ namespace MohawkGame2D
                 Draw.Rectangle(0, 330, 400, 70);
             }
         }
-            void GenerateSmallStarPositions()
+
+        // Helper to (re)generate star positions
+        private void GenerateSmallStars()
+        {
+            smallStarPositions.Clear();
+            for (int i = 0; i < amountOfSmallStars; i++)
             {
-                //Star Location Boarders
-                int xMin = 10;
-                int xMax = 390;
-                int yMin = 10;
-                int yMax = 310;
-                //Randomize x, y coordinates & store in array
-                for (int i = 0; i < smallStarPositions.Length; i++)
-                {
-                    int x = Random.Integer(xMin, xMax);
-                    int y = Random.Integer(yMin, yMax);
-                    smallStarPositions[i] = new Vector2(x, y);
-                }
+                int x = Random.Integer(starXMin, starXMax);
+                int y = Random.Integer(starYMin, starYMax);
+                smallStarPositions.Add(new Vector2(x, y));
             }
+        }
     }
 
 }
