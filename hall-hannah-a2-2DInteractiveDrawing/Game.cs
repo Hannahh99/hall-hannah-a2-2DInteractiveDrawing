@@ -23,9 +23,33 @@ namespace MohawkGame2D
         Color lightPink     = new Color("#edc8c4");
         Color pink          = new Color("#cf8acb");
 
+        //Base Cat Colors
         Color catColor = Color.LightGray;
+        Color catEyeColor = Color.DarkGray;
+        Color catNoseColor = Color.DarkGray;
+        //Create an array of cat fur colors to pick from
+        Color[] catColorPalette = [
+            new Color("#352b42"), //Dark Purple
+            new Color("#d3925b"), //Orange
+            new Color("#443331"), //Dark Brown
+            new Color("#f2f0e5"), //White
+            new Color("#5f556a")  //Grey
+            ];
+        //Create an array of cat eye colors to pick from
+        Color[] catEyeColorPalette = [
+            new Color("#68c2d3"), //Light Blue
+            new Color("#3a3858"), //Dark Blue
+            new Color("#8ab060"), //Green
+            new Color("#d3a068"), //Orange
+            new Color("#80493a")  //Brown
+            ];
+        Color[] catNoseColorPalette = [
+            new Color("#cb8993"), //Pink
+            new Color("#edc8c4"), //Peach
+            new Color("#212123")  //Black
+            ];
 
-        //Declare an array for how many small stars are generated
+        //Create an array for how many small stars are generated
         private Vector2[] smallStarPositions = new Vector2[8];
         
         /// <summary>
@@ -83,57 +107,58 @@ namespace MohawkGame2D
             Draw.Square(100, 270, 5);
             Draw.Rectangle(95, 275, 10, 5);
             Draw.Rectangle(90, 280, 10, 5);
-
-            //bottom outline
-            DrawOutlineRectangle(65, 340, 60, 5);
-            //left outline ascending horizontal
-            DrawOutlineRectangle(55, 335, 10, 5);
-            //right outline ascending horizontal
-            DrawOutlineRectangle(125, 335, 10, 5);
-            //right outline ascending vertical
-            DrawOutlineRectangle(135, 305, 5, 30);
+            {
+                //bottom outline
+                DrawOutlineRectangle(65, 340, 60, 5);
+                //left outline ascending horizontal
+                DrawOutlineRectangle(55, 335, 10, 5);
+                //right outline ascending horizontal
+                DrawOutlineRectangle(125, 335, 10, 5);
+                //right outline ascending vertical
+                DrawOutlineRectangle(135, 305, 5, 30);
                 DrawOutlineRectangle(130, 295, 5, 10);
-            //left outline ascending vertical
-            DrawOutlineRectangle(50, 305, 5, 30);
+                //left outline ascending vertical
+                DrawOutlineRectangle(50, 305, 5, 30);
                 DrawOutlineRectangle(55, 295, 5, 10);
-            //left outline ascending horizontal (top line)
-            DrawOutlineRectangle(60, 290, 10, 5);
+                //left outline ascending horizontal (top line)
+                DrawOutlineRectangle(60, 290, 10, 5);
                 DrawOutlineRectangle(70, 285, 15, 5);
-            //right outline ascending horizontal (top line)
-            DrawOutlineRectangle(120, 290, 10, 5);
+                //right outline ascending horizontal (top line)
+                DrawOutlineRectangle(120, 290, 10, 5);
                 DrawOutlineRectangle(105, 285, 15, 5);
-            //top outline
-            DrawOutlineRectangle(90, 285, 10, 5);
+                //top outline
+                DrawOutlineRectangle(90, 285, 10, 5);
 
-            //stem outline
-            DrawOutlinePixel(85, 280, 5);
-            DrawOutlinePixel(100, 280, 5);
-            DrawOutlinePixel(90, 275, 5);
-            DrawOutlineRectangle(95, 265, 5, 10);
-            DrawOutlineRectangle(100, 265, 10, 5);
-            DrawOutlineRectangle(105, 265, 5, 15);
+                //stem outline
+                DrawOutlinePixel(85, 280, 5);
+                DrawOutlinePixel(100, 280, 5);
+                DrawOutlinePixel(90, 275, 5);
+                DrawOutlineRectangle(95, 265, 5, 10);
+                DrawOutlineRectangle(100, 265, 10, 5);
+                DrawOutlineRectangle(105, 265, 5, 15);
 
-            //Pumpkin Detail Lines
-            //Left
-            Draw.LineSize = 1;
-            Draw.LineColor = darkOrange;
-            Draw.FillColor = darkOrange;
-            Draw.Rectangle(65, 310, 5, 20);
-            Draw.Rectangle(70, 300, 5, 10);
-            Draw.Square(75, 335, 5);
-            Draw.Square(70, 330, 5);
-            Draw.Square(80, 290, 5);
-            Draw.Square(75, 295, 5);
-            //Right
-            Draw.Rectangle(120, 310, 5, 20);
-            Draw.Rectangle(115, 300, 5, 10);
-            Draw.Square(110, 335, 5);
-            Draw.Square(115, 330, 5);
-            Draw.Square(105, 290, 5);
-            Draw.Square(110, 295, 5);
-            //Centre
-            Draw.Rectangle(95, 290, 5, 50);
-            Draw.Square(90, 290, 5);
+                //Pumpkin Detail Lines
+                //Left
+                Draw.LineSize = 1;
+                Draw.LineColor = darkOrange;
+                Draw.FillColor = darkOrange;
+                Draw.Rectangle(65, 310, 5, 20);
+                Draw.Rectangle(70, 300, 5, 10);
+                Draw.Square(75, 335, 5);
+                Draw.Square(70, 330, 5);
+                Draw.Square(80, 290, 5);
+                Draw.Square(75, 295, 5);
+                //Right
+                Draw.Rectangle(120, 310, 5, 20);
+                Draw.Rectangle(115, 300, 5, 10);
+                Draw.Square(110, 335, 5);
+                Draw.Square(115, 330, 5);
+                Draw.Square(105, 290, 5);
+                Draw.Square(110, 295, 5);
+                //Centre
+                Draw.Rectangle(95, 290, 5, 50);
+                Draw.Square(90, 290, 5);
+            }
         }
 
             void DrawCat()
@@ -141,7 +166,7 @@ namespace MohawkGame2D
             if (Input.IsMouseButtonPressed(MouseInput.Left))
             {
                 //Assign Random Color when user presses [LEFTMOUSE]
-                catColor = Random.Color();
+                GenerateCatColors();
             }
                 //Fill Cat Color
                 Draw.LineSize = 1;
@@ -158,62 +183,63 @@ namespace MohawkGame2D
                 Draw.Rectangle(255, 325, 15, 5);
                 Draw.Rectangle(260, 310, 15, 15);
 
-            //Eye Color
-            Draw.LineSize = 1;
-                Draw.LineColor = darkBlue;
-                Draw.FillColor = darkBlue;
-            Draw.Square(205, 285, 5);
-            Draw.Square(225, 285, 5);
-            //Nose
-            Draw.LineSize = 1;
-            Draw.LineColor = black;
-            Draw.FillColor = black;
-            Draw.Square(215, 290, 5);
-
-            //bottom outline
-            DrawOutlineRectangle(190, 340, 70, 5);
-            //Left back foot
-            DrawOutlinePixel(200, 335, 5);
-            DrawOutlineRectangle(195, 325, 5, 10);
-            DrawOutlinePixel(190, 335, 5);
-            //Right back foot
-            DrawOutlinePixel(230, 335, 5);
-            DrawOutlineRectangle(235, 325, 5, 10);
-            DrawOutlinePixel(240, 335, 5);
-            //Front feet
-            DrawOutlineRectangle(210, 325, 5, 15);
-            DrawOutlineRectangle(220, 325, 5, 15);
-            //Torso Sides
-            DrawOutlineRectangle(245, 315, 5, 20);
-            DrawOutlineRectangle(185, 315, 5, 20);
-            DrawOutlineRectangle(240, 305, 5, 10);
-            DrawOutlineRectangle(190, 305, 5, 10);
-            DrawOutlinePixel(195, 300, 5);
-            DrawOutlinePixel(235, 300, 5);
-            //Tail
-            DrawOutlinePixel(260, 335, 5);
-            DrawOutlinePixel(265, 330, 5);
-            DrawOutlineRectangle(270, 310, 5, 20);
-            DrawOutlineRectangle(260, 305, 10, 5);
-            DrawOutlineRectangle(255, 310, 5, 15);
-            DrawOutlinePixel(250, 325, 5);
-            //Head
-            DrawOutlineRectangle(240, 255, 5, 45);
-            DrawOutlineRectangle(190, 255, 5, 45);
-            DrawOutlineRectangle(205, 265, 25, 5);
-            //Whiskers
-            DrawOutlinePixel(185, 295, 5);
-            DrawOutlinePixel(185, 285, 5);
-            DrawOutlinePixel(245, 295, 5);
-            DrawOutlinePixel(245, 285, 5);
-            //Eyes
-            DrawOutlinePixel(205, 280, 5);
-            DrawOutlinePixel(225, 280, 5);
-            //Ears left & right
-            DrawOutlinePixel(195, 255, 5);
-            DrawOutlinePixel(200, 260, 5);
-            DrawOutlinePixel(235, 255, 5);
-            DrawOutlinePixel(230, 260, 5);
+                //Eye Color
+                Draw.LineSize = 1;
+                Draw.LineColor = catEyeColor;
+                Draw.FillColor = catEyeColor;
+                Draw.Square(205, 285, 5);
+                Draw.Square(225, 285, 5);
+                //Nose
+                Draw.LineSize = 1;
+                Draw.LineColor = catNoseColor;
+                Draw.FillColor = catNoseColor;
+                Draw.Square(215, 290, 5);
+            {
+                //Bottom outline
+                DrawOutlineRectangle(190, 340, 70, 5);
+                //Left back foot
+                DrawOutlinePixel(200, 335, 5);
+                DrawOutlineRectangle(195, 325, 5, 10);
+                DrawOutlinePixel(190, 335, 5);
+                //Right back foot
+                DrawOutlinePixel(230, 335, 5);
+                DrawOutlineRectangle(235, 325, 5, 10);
+                DrawOutlinePixel(240, 335, 5);
+                //Front feet
+                DrawOutlineRectangle(210, 325, 5, 15);
+                DrawOutlineRectangle(220, 325, 5, 15);
+                //Torso Sides
+                DrawOutlineRectangle(245, 315, 5, 20);
+                DrawOutlineRectangle(185, 315, 5, 20);
+                DrawOutlineRectangle(240, 305, 5, 10);
+                DrawOutlineRectangle(190, 305, 5, 10);
+                DrawOutlinePixel(195, 300, 5);
+                DrawOutlinePixel(235, 300, 5);
+                //Tail
+                DrawOutlinePixel(260, 335, 5);
+                DrawOutlinePixel(265, 330, 5);
+                DrawOutlineRectangle(270, 310, 5, 20);
+                DrawOutlineRectangle(260, 305, 10, 5);
+                DrawOutlineRectangle(255, 310, 5, 15);
+                DrawOutlinePixel(250, 325, 5);
+                //Head
+                DrawOutlineRectangle(240, 255, 5, 45);
+                DrawOutlineRectangle(190, 255, 5, 45);
+                DrawOutlineRectangle(205, 265, 25, 5);
+                //Whiskers
+                DrawOutlinePixel(185, 295, 5);
+                DrawOutlinePixel(185, 285, 5);
+                DrawOutlinePixel(245, 295, 5);
+                DrawOutlinePixel(245, 285, 5);
+                //Eyes
+                DrawOutlinePixel(205, 280, 5);
+                DrawOutlinePixel(225, 280, 5);
+                //Ears left & right
+                DrawOutlinePixel(195, 255, 5);
+                DrawOutlinePixel(200, 260, 5);
+                DrawOutlinePixel(235, 255, 5);
+                DrawOutlinePixel(230, 260, 5);
+            }
         }
 
             void DrawBackground()
@@ -304,6 +330,7 @@ namespace MohawkGame2D
                 Draw.Rectangle(0, 330, 400, 70);
             }
         }
+
             void GenerateSmallStarPositions()
             {
                 //Star Location Boarders
@@ -311,7 +338,7 @@ namespace MohawkGame2D
                 int xMax = 390;
                 int yMin = 10;
                 int yMax = 310;
-                //Randomize x, y coordinates & store in array
+                //Randomize x, y coordinates & store
                 for (int i = 0; i < smallStarPositions.Length; i++)
                 {
                     int x = Random.Integer(xMin, xMax);
@@ -319,6 +346,30 @@ namespace MohawkGame2D
                     smallStarPositions[i] = new Vector2(x, y);
                 }
             }
+            void GenerateCatColors()
+            {
+                if (Input.IsMouseButtonPressed(MouseInput.Left))
+                {
+                    //Generate a random index
+                    var randomIndex = Random.Integer(catColorPalette.Length);
+                    //Get the random color
+                    catColor = catColorPalette[randomIndex];
+                }
+                if (Input.IsMouseButtonPressed(MouseInput.Left))
+                {
+                    //Generate a random index
+                    var randomIndex = Random.Integer(catEyeColorPalette.Length);
+                    //Get the random color
+                    catEyeColor = catEyeColorPalette[randomIndex];
+                }
+                if (Input.IsMouseButtonPressed(MouseInput.Left))
+                {
+                    //Generate a random index
+                    var randomIndex = Random.Integer(catNoseColorPalette.Length);
+                    //Get the random color
+                    catNoseColor = catNoseColorPalette[randomIndex];
+                }
+        }
     }
 
 }
