@@ -43,6 +43,7 @@ namespace MohawkGame2D
             new Color("#d3a068"), //Orange
             new Color("#80493a")  //Brown
             ];
+        //Create an array of cat nose colors to pick from
         Color[] catNoseColorPalette = [
             new Color("#cb8993"), //Pink
             new Color("#edc8c4"), //Peach
